@@ -1,0 +1,560 @@
+SQLite is a lightweight, embedded(file based db ie. file.db, it's not run as a server) relational database management system(RDBMS).
+It supports ACID property.
+It is not a client/server db like other RDBMS(MS SQL server, MYSQL or Oracle).
+It reuire less configuration than client/server based db.
+Can be implement with many programming languages like: c, c#, c++, java, javascript, python and many more.
+
+Features:
+-serverless
+-zero congiguration
+-portable
+-simplicity
+-flexibility
+-liberal licensing
+-reliability - supports ACID, joins and all
+-convenience
+
+DATA TYPES
+1. NULL
+2. INTEGER - 1,2,3,...
+3. REAL - floating point
+4. TEXT - string
+5. BLOB - The value is a blob of data, stored exactly as it was input.
+
+AFFINIY
+SQLite supports the concept of type affinity on columns. Any column can still store any type of data but the preferred storage class for a column is called its affinity. 
+TEXT, NUMERIC, INTEGER, REAL, NONE
+
+To check sqlite3 installed in system, go to terminal and type 'sqlite3' output : SQLite version 3.31.1 2020-01-27 19:55:54 
+.
+.
+.
+sqlite> 
+
+, if it shows 'not recognise' so first install it and check again.
+
+transient in-memory database - if we don't want to create any physical file than also we can use it for now.
+
+
+To CLEAR terminal: '.shell clear' in linux and '.shell cls' for windows.
+
+
+CREATE DATABASE
+hp@hp-HP-ProDesk-600-G2-DM:~$ sqlite3 company.db
+
+.dump - to export complete database in a text file
+$sqlite3 testDB.db .dump > testDB.sql
+
+restoration from the generated testDB.sql 
+$sqlite3 testDB.db < testDB.sql
+
+ATTACH
+ATTACH DATABASE statement is used to select a particular database
+sqlite> ATTACH DATABASE 'testDB.db' as 'TEST';
+
+DETACH
+DETACH DATABASE statement is used to detach and dissociate a named database from a database connection
+sqlite> DETACH DATABASE 'currentDB';
+
+CHECK AVAILABLE DATABASES
+sqlite> .databases
+or
+sqlite> .database
+
+CREATE TABLE
+sqlite> create table employee 
+   ...> (
+   ...> empid int, 
+   ...> empname text, 
+   ...> age int,
+   ...> salary real
+   ...> );
+
+SHOW ALL TABLES
+sqlite> .tables
+
+VIEW TABLE STRUCTURE OF PARTICULAR TABLE
+sqlite> .schema employee
+
+VIEW TABLE STRUCTURE OF ALL TABLE
+sqlite> .schema
+
+create one more table and check again.
+
+INSERT
+sqlite> INSERT into employee values (1, Aastha, 21, 10000.00);
+
+Populate One Table Using Another Table
+INSERT INTO first_table_name [(column1, column2, ... columnN)] 
+   SELECT column1, column2, ...columnN 
+   FROM second_table_name
+   [WHERE condition];
+
+
+SELECT
+sqlite> SELECT * from employee;
+or
+sqlite>.header on
+sqlite>.mode column
+sqlite> SELECT * FROM COMPANY;
+
+sqlite> select current_timestamp;
+current_timestamp             
+------------------------------
+2023-08-01 09:59:34           
+
+
+OPERATORS
+Arithmetic operators: +,-,*,/,%
+
+Comparison operators: ==, =, !=, <>, >, <, >=, <=, !<, !>
+Logical operators: AND, BETWEEN, EXISTS, IN, NOT IN, LIKE, GLOB(*,?)(to compare a value to similar values using wildcard operators), NOT, OR, IS NULL, IS(=), IS NOT(!=), ||(Adds two different strings and make new one.), UNIQUE(no duplicates).
+
+Bitwise operators: &, |, ~((~A ) will give -61 which is 1100 0011 in 2's complement form due to a signed binary number), <<, >>
+
+
+UPDATE
+sqlite> UPDATE employee set salary=50000 where empid =1;
+
+DELETE
+sqlite> DELETE from employee where empname= 'Ritisha';
+OR 
+sqlite> DELETE from employee; - will delete all data from table
+
+DROP
+DROP TABLE database_name.table_name;
+sqlite> drop table department; - will delete full table with structure.
+
+LIKE
+WHERE SALARY LIKE '200%'
+Finds any values that start with 200
+
+WHERE SALARY LIKE '%200%'
+Finds any values that have 200 in any position
+
+WHERE SALARY LIKE '_00%'
+Finds any values that have 00 in the second and third positions
+
+WHERE SALARY LIKE '2_%_%'
+Finds any values that start with 2 and are at least 3 characters in length
+
+WHERE SALARY LIKE '%2'
+Finds any values that end with 2
+
+WHERE SALARY LIKE '_2%3'
+Finds any values that has a 2 in the second position and ends with a 3
+
+WHERE SALARY LIKE '2___3'
+Finds any values in a five-digit number that starts with 2 and ends with 3
+
+GLOB
+WHERE SALARY GLOB '200*'
+Finds any values that start with 200
+
+WHERE SALARY GLOB '*200*'
+Finds any values that have 200 in any position
+
+WHERE SALARY GLOB '?00*'
+Finds any values that have 00 in the second and third positions
+
+WHERE SALARY GLOB '2??'
+Finds any values that start with 2 and are at least 3 characters in length
+
+WHERE SALARY GLOB '*2'
+Finds any values that end with 2
+
+WHERE SALARY GLOB '?2*3'
+Finds any values that have a 2 in the second position and end with a 3
+
+WHERE SALARY GLOB '2???3'
+Finds any values in a five-digit number that start with 2 and end with 3
+
+LIMIT
+sqlite> SELECT * FROM COMPANY LIMIT 6;
+sqlite> SELECT * FROM COMPANY LIMIT 3 OFFSET 2; - picks up 3 records starting from the 3rd position
+
+ORDER BY 
+to sort the data in an ascending or descending order, based on one or more columns
+SELECT column-list 
+FROM table_name 
+[WHERE condition] 
+[ORDER BY column1, column2, .. columnN] [ASC | DESC];
+
+GROUP BY 
+used in collaboration with the SELECT statement to arrange identical data into groups
+SELECT column-list
+FROM table_name
+WHERE [ conditions ]
+GROUP BY column1, column2....columnN
+ORDER BY column1, column2....columnN
+or
+sqlite> SELECT NAME, SUM(SALARY) FROM COMPANY GROUP BY NAME ORDER BY NAME;
+
+HAVING
+to specify conditions that filter which group results appear in the final results.
+SELECT
+FROM
+WHERE
+GROUP BY
+HAVING
+ORDER BY
+or
+sqlite > SELECT * FROM COMPANY GROUP BY name HAVING count(name) > 2;
+
+DISTINCT
+used in conjunction with SELECT statement to eliminate all the duplicate records and fetching only the unique records
+SELECT DISTINCT column1, column2,.....columnN 
+FROM table_name
+WHERE [condition]
+
+CONSTRAINTS
+NOT NULL Constraint − Ensures that a column cannot have NULL value.
+DEFAULT Constraint − Provides a default value for a column when none is specified.DEFAULT 50000.00
+UNIQUE Constraint − Ensures that all values in a column are different.
+PRIMARY Key − Uniquely identifies each row/record in a database table.
+CHECK Constraint − Ensures that all values in a column satisfies certain conditions.CHECK(SALARY > 0)
+
+EXPORT DATA IN CSV FILE
+sqlite> .header on
+sqlite> .mode csv
+sqlite> .once ABC.csv
+sqlite> select * from employee;
+
+ALTER TABLE
+ALTER TABLE command modifies an existing table without performing a full dump and reload of the data.
+There is no other operation supported by ALTER TABLE command in SQLite except renaming a table and adding a column in an existing table.
+ALTER TABLE database_name.table_name RENAME TO new_table_name;
+ALTER TABLE database_name.table_name ADD COLUMN column_def...;
+eg.
+sqlite> ALTER table employee RENAME to employees;
+sqlite> ALTER table employees ADD COLUMN did int;
+
+sqlite> UPDATE employees set did= 102 where empid = 4;
+sqlite> update department set dname= 'IT' where did=102;
+sqlite> update department set dname= 'HR' where did=101;
+sqlite> select * from department;
+
+JOINS
+SQL defines three major types of joins −
+The CROSS JOIN - matches every row of the first table with every row of the second table.
+The INNER JOIN
+The OUTER JOIN
+
+INNER JOIN
+sqlite> select * from employees e INNER join department d on e.did= d.did;
+- gives all matched data from both the tables ie. 
+empid,empname,age,salary,did,did,dname
+1,Aastha,21,50000.0,101,101,HR
+2,Naman,22,20000.0,102,102,IT
+4,Rashmi,23,30500.0,102,102,IT
+
+LEFT JOIN
+sqlite> select * from employees e LEFT join department d on e.did= d.did; 
+empid,empname,age,salary,did,did,dname
+1,Aastha,21,50000.0,101,101,HR
+2,Naman,22,20000.0,102,102,IT
+3,Swati,23,30000.0,103,,
+4,Rashmi,23,30500.0,102,102,IT
+
+RIGHT JOIN
+sqlite> select * from employees e RIGHT join department d on e.did= d.did; 
+Error: RIGHT and FULL OUTER JOINs are not currently supported
+:: solution
+By doing a left join and switching the tables
+sqlite> select * from department d LEFT join employees e on d.did= e.did; 
+
+UNION
+used to combine the results of two or more SELECT statements without returning any duplicate rows
+SELECT column1 [, column2 ]
+FROM table1 [, table2 ]
+[WHERE condition]
+UNION
+SELECT column1 [, column2 ]
+FROM table1 [, table2 ]
+[WHERE condition]
+
+UNION ALL
+used to combine the results of two SELECT statements including duplicate rows
+SELECT column1 [, column2 ]
+FROM table1 [, table2 ]
+[WHERE condition]
+UNION ALL
+SELECT column1 [, column2 ]
+FROM table1 [, table2 ]
+[WHERE condition]
+
+
+ALIAS
+sqlite> select empid as eid, * from employees;
+
+TRIGGERS
+Triggers are database callback functions, which are automatically performed/invoked when a specified database event occurs.
+CREATE TRIGGER trigger_name [BEFORE|AFTER] event_name 
+ON table_name
+BEGIN
+ -- Trigger logic goes here....
+END;
+eg.
+sqlite> CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+sqlite> CREATE TABLE AUDIT(
+   EMP_ID INT NOT NULL,
+   ENTRY_DATE TEXT NOT NULL
+);
+sqlite> CREATE TRIGGER audit_log AFTER INSERT 
+ON COMPANY
+BEGIN
+   INSERT INTO AUDIT(EMP_ID, ENTRY_DATE) VALUES (new.ID, datetime('now'));
+END;
+sqlite> INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY)
+VALUES (1, 'Paul', 32, 'California', 20000.00 );
+
+Listing Triggers
+sqlite> select name from sqlite_master where type= 'trigger';
+
+Dropping Triggers
+sqlite> DROP TRIGGER trigger_name;
+
+INDEXES
+Indexes are special lookup tables that the database search engine can use to speed up data retrieval. Simply put, an index is a pointer to data in a table.
+CREATE INDEX 
+CREATE INDEX index_name ON table_name;
+
+TYPES-
+Single-Column Indexes: CREATE INDEX index_name ON table_name (column_name);
+Unique Indexes: CREATE UNIQUE INDEX index_name on table_name (column_name);
+Composite Indexes: CREATE INDEX index_name on table_name (column1,column2);
+Implicit Indexes: sqlite> CREATE INDEX salary_index ON COMPANY (salary);
+sqlite> .indices COMPANY
+OUTPUT: salary_index
+
+DROP INDEX: DROP INDEX salary_index;
+
+
+
+PRE DEFIENED FUNCTIONS:
+
+CONCATENATE
+sqlite> select 'AASTHA' || 'PANWAR' || 'MCA';
+"'AASTHA' || 'PANWAR' || 'MCA'"
+AASTHAPANWARMCA
+
+sqlite> select empid ||' '|| empname from employees;
+"empid ||' '|| empname"
+"1 Aastha"
+"2 Naman"
+"3 Swati"
+"4 Rashmi"
+
+LENGTH
+sqlite> select length(empname) from employees;
+length(empname)
+6
+5
+5
+6
+
+sqlite> select UPPER(empname) from employees;
+sqlite> select LOWER(empname) from employees;
+sqlite> select COUNT(empname) from employees;
+sqlite> select MAX(SALARY) from employees;
+sqlite> select MIN(SALARY) from employees;
+sqlite> select AVG(SALARY) from employees;
+
+
+TRUNCATE TABLE
+Unfortunately, we do not have TRUNCATE TABLE command in SQLite but you can use SQLite DELETE command to delete complete data from an existing table.
+sqlite> DELETE FROM table_name;
+SQLite> VACUUM;
+
+
+VIEWS
+SQLite views are read-only and thus you may not be able to execute a DELETE, INSERT or UPDATE statement on a view. However, you can create a trigger on a view that fires on an attempt to DELETE, INSERT, or UPDATE a view and do what you need in the body of the trigger.
+
+Creating Views
+CREATE [TEMP | TEMPORARY] VIEW view_name AS
+SELECT column1, column2.....
+FROM table_name
+WHERE [condition];
+
+sqlite> create view emp_view as select empid, empname, age from employees;
+sqlite> select * from emp_view;
+
+Dropping Views
+sqlite> drop view emp_view;
+
+TRANSACTIONS
+A transaction is the propagation of one or more changes to the database. For example, if you are creating, updating, or deleting a record from the table, then you are performing transaction on the table. It is important to control transactions to ensure data integrity and to handle database errors.
+
+Properties of Transactions
+Atomicity
+Consistency
+Isolation
+Durability
+
+Transaction Control
+BEGIN TRANSACTION − To start a transaction.
+BEGIN;
+or 
+BEGIN TRANSACTION;
+
+COMMIT − To save the changes, alternatively you can use END TRANSACTION command.
+COMMIT;
+or
+END TRANSACTION;
+
+ROLLBACK − To rollback the changes.
+ROLLBACK;
+
+eg.
+sqlite> BEGIN;
+sqlite> DELETE FROM COMPANY WHERE AGE = 25;
+sqlite> ROLLBACK;  - undo
+
+sqlite> BEGIN;
+sqlite> DELETE FROM COMPANY WHERE AGE = 25;
+sqlite> COMMIT;  - can't undo
+
+SUBQUERY
+A Subquery or Inner query or Nested query is a query within another SQLite query and embedded within the WHERE clause.
+
+sqlite> SELECT * 
+   FROM COMPANY 
+   WHERE ID IN (SELECT ID 
+      FROM COMPANY 
+      WHERE SALARY > 45000) ;
+
+Subqueries with INSERT Statement
+sqlite> INSERT INTO COMPANY_BKP
+   SELECT * FROM COMPANY 
+   WHERE ID IN (SELECT ID 
+      FROM COMPANY) ;
+
+Subqueries with UPDATE Statement
+sqlite> UPDATE COMPANY
+   SET SALARY = SALARY * 0.50
+   WHERE AGE IN (SELECT AGE FROM COMPANY_BKP
+      WHERE AGE >= 27 );
+
+Subqueries with DELETE Statement
+sqlite> DELETE FROM COMPANY
+   WHERE AGE IN (SELECT AGE FROM COMPANY_BKP
+   WHERE AGE > 27 );
+
+
+AUTOINCREMENT
+for auto incrementing a value of a field
+eg.    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+
+
+INJECTION
+Injection usually occurs when you ask a user for input, like their name, and instead of a name they give you a SQLite statement that you will unknowingly run on your database.
+
+if (preg_match("/^\w{8,20}$/", $_GET['username'], $matches)){
+   $db = new SQLiteDatabase('filename');
+   $result = @$db->query("SELECT * FROM users WHERE username = $matches[0]");
+} else {
+   echo "username not accepted";
+}
+
+
+EXPLAIN
+"EXPLAIN" or by the phrase "EXPLAIN QUERY PLAN" used for describing the details of a table.
+Applications should not use EXPLAIN or EXPLAIN QUERY PLAN since their exact behavior is variable and only partially documented.
+eg.
+sqlite> explain select * from employees where salary <20000;
+sqlite> explain query plan select * from employees where salary <20000;
+
+VACUUM
+The VACUUM command rebuilds the database file, repacking it into a minimal amount of disk space.
+The VACUUM command works by copying the contents of the database into a temporary database file and then overwriting the original with the contents of the temporary file. 
+
+Manual VACUUM
+$sqlite3 database_name "VACUUM;"
+sqlite> VACUUM;
+sqlite> VACUUM table_name;
+
+Auto-VACCUM
+SQLite Auto-VACUUM does not do the same as VACUUM rather it only moves free pages to the end of the database thereby reducing the database size. By doing so it can significantly fragment the database while VACUUM ensures defragmentation. Hence, Auto-VACUUM just keeps the database small.
+
+sqlite> PRAGMA auto_vacuum = NONE; -- 0 means disable auto vacuum
+sqlite> PRAGMA auto_vacuum = FULL; -- 1 means enable full auto vacuum
+sqlite> PRAGMA auto_vacuum = INCREMENTAL; -- 2 means enable incremental vacuum
+$sqlite3 database_name "PRAGMA auto_vacuum;"
+
+
+DATE & TIME
+SQLite supports five date and time functions as follows −
+
+1 date(timestring, modifiers...)	This returns the date in this format: YYYY-MM-DD
+2	time(timestring, modifiers...)	This returns the time as HH:MM:SS
+3	datetime(timestring, modifiers...)	This returns YYYY-MM-DD HH:MM:SS
+4	julianday(timestring, modifiers...)	This returns the number of days since noon in Greenwich on November 24, 4714 B.C.
+5	strftime(timestring, modifiers...)	This returns the date formatted according to the format string specified as the first argument formatted as per formatters explained below.
+
+sqlite> SELECT date('now');
+2013-05-07
+
+sqlite> SELECT date('now','start of month','+1 month','-1 day');
+2013-05-31
+
+sqlite> SELECT datetime(1092941466, 'unixepoch');
+2004-08-19 18:51:06
+
+sqlite> SELECT time('12:00', 'localtime');
+05:00:00
+
+sqlite> SELECT time('12:00', 'utc');
+19:00:00
+
+
+USEFUL FUNCTIONS
+SQLite COUNT Function
+SQLite COUNT aggregate function is used to count the number of rows in a database table.
+
+SQLite MAX Function
+SQLite MAX aggregate function allows us to select the highest (maximum) value for a certain column.
+
+SQLite MIN Function
+SQLite MIN aggregate function allows us to select the lowest (minimum) value for a certain column.
+
+SQLite AVG Function
+SQLite AVG aggregate function selects the average value for certain table column.
+
+SQLite SUM Function
+SQLite SUM aggregate function allows selecting the total for a numeric column.
+
+SQLite RANDOM Function
+SQLite RANDOM function returns a pseudo-random integer between -9223372036854775808 and +9223372036854775807.
+sqlite> SELECT random() AS Random;
+
+SQLite ABS Function
+SQLite ABS function returns the absolute value of the numeric argument.
+sqlite> SELECT abs(5), abs(-15), abs(NULL), abs(0), abs("ABC");
+
+SQLite UPPER Function
+SQLite UPPER function converts a string into upper-case letters.
+
+SQLite LOWER Function
+SQLite LOWER function converts a string into lower-case letters.
+
+SQLite LENGTH Function
+SQLite LENGTH function returns the length of a string.
+
+SQLite sqlite_version Function
+SQLite sqlite_version function returns the version of the SQLite library.
+sqlite> SELECT sqlite_version() AS 'SQLite Version';
+SQLite Version
+--------------
+3.6.20
+
+
+
+
+
+
